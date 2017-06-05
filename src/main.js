@@ -1,5 +1,6 @@
 import 'babel-polyfill';
 import fastclick from 'fastclick';
+import 'common/stylus/index.styl';
 import Vue from 'vue';
 import App from './App';
 import router from './router';
