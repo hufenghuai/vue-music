@@ -1,35 +1,42 @@
 <template>
   <div class="recommend">
-    <div class="recommend-content">
-      <div v-if="recommends.length" class="slider-wrapper">
-        <slider>
-          <div v-for="item in recommends">
-            <a :href="item.linkUrl">
-              <img :src="item.picUrl">
-            </a>
-          </div>
-        </slider>
-      </div>
-      <div class="recommend-list">
-        <h1 class="list-title">热门歌单推荐</h1>
-        <ul>
-          <li class="item" v-for="item in discList">
-            <div class="icon">
-              <img :src="item.imgurl" width="60" height="60" />
+    <scroll ref="scroll" class="recommend-content" :data="discList">
+      <div>
+        <div v-if="recommends.length" class="slider-wrapper">
+          <slider>
+            <div v-for="item in recommends">
+              <a :href="item.linkUrl">
+                <img class="needsclick" :src="item.picUrl" @load="loadImage">
+              </a>
             </div>
-            <div class="text">
-              <h2 class="name" v-html="item.creator.name"></h2>
-              <p class="desc" v-html="item.dissname"></p>
-            </div>
-          </li>
-        </ul>
+          </slider>
+        </div>
+        <div class="recommend-list">
+          <h1 class="list-title">热门歌单推荐</h1>
+          <ul>
+            <li class="item" v-for="item in discList">
+              <div class="icon">
+                <img v-lazy="item.imgurl" width="60" height="60" />
+              </div>
+              <div class="text">
+                <h2 class="name" v-html="item.creator.name"></h2>
+                <p class="desc" v-html="item.dissname"></p>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
-    </div>
+      <div class="loading-container" v-show="!discList.length">
+        <loading></loading>
+      </div>
+    </scroll>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import { getRecommend, getDiscList } from 'api/recommend';
+  import Scroll from 'base/scroll/scroll';
+  import Loading from 'base/loading/loading';
   import { ERR_OK } from 'api/config';
   import Slider from 'base/slider/slider';
 
@@ -42,6 +49,8 @@
     },
     components: {
       Slider,
+      Scroll,
+      Loading
     },
     created () {
       this.$getRecommend();
@@ -61,6 +70,12 @@
             this.discList = res.data.list;
           }
         });
+      },
+      loadImage() {
+        if (!this.checkloaded) {
+          this.$refs.scroll.refresh();
+          this.checkloaded = true;
+        }
       },
     },
   };
@@ -111,5 +126,9 @@
               color $color-text
             .desc
               color $color-text-d
-
+      .loading-container
+        position absolute
+        width 100%
+        top 50%
+        transform translateY(-50%)
 </style>
