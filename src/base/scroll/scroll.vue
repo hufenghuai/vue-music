@@ -21,6 +21,10 @@
         type: Array,
         default: null,
       },
+      listenScroll: {
+        type: Boolean,
+        default: false
+      }
     },
     mounted() {
       setTimeout(() => {
@@ -36,6 +40,13 @@
           probeType: this.probeType,
           click: this.click,
         });
+
+        if (this.listenScroll) {
+          const _this = this; // 保留指向vue实例的this
+          this.scroll.on('scroll', (pos) => {
+            _this.$emit('scroll', pos);
+          });
+        }
       },
       enable() {
         this.scroll && this.scroll.enable();

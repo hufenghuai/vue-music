@@ -1,5 +1,11 @@
 <template>
-  <scroll class="listview" :data="data" ref="listview">
+  <scroll class="listview"
+          :data="data"
+          ref="listview"
+          :listenScroll="listenScroll"
+          :probeType="probeType"
+          @scroll="scroll"
+  >
     <ul>
       <li v-for="group in data" class="list-group" ref="listGroup">
         <h2 class="list-group-title">{{ group.title }}</h2>
@@ -13,7 +19,11 @@
     </ul>
     <div class="list-shortcut" @touchstart="onShortcutTouchStart" @touchmove.stop.prevent="onShortcutTouchMove">
       <ul>
-        <li v-for="(item, index) in shortcutList" class="item" :data-index="index">
+        <li v-for="(item, index) in shortcutList"
+            class="item"
+            :data-index="index"
+            :class="{'current': currentIndex === index }"
+        >
           {{ item }}
         </li>
       </ul>
@@ -30,6 +40,15 @@
   export default {
     created() {
       this.touch = {};
+      this.listenScroll = true;
+      this.listHeight = [];
+      this.probeType = 3;
+    },
+    data() { // watch
+      return {
+        scrollY: -1,
+        currentIndex: 0
+      };
     },
     props: {
       data: {
@@ -47,6 +66,35 @@
     components: {
       Scroll
     },
+    watch: { // 监听data变化
+      data() { // 当data发生变化，重新计算每个group高度
+        setTimeout(() => {
+          this._calculateHeight();
+        }, 20);
+      },
+      scrollY(newY) { // 监测scrollY发生变化
+        // newY就是scroll里面的pos.y
+        const listHeight = this.listHeight;
+        // 当滚动到顶部，newY > 0;
+        if (newY > 0) {
+          this.currentIndex = 0;
+          return;
+        }
+        // 在中间部分滚动
+        for (let i = 0; i < listHeight.length - 1; i++) {
+          // listHeight.length - 1,则保证了height2即listHeight[i + 1]永远存在
+          const height1 = listHeight[i];
+          const height2 = listHeight[i + 1];
+          if (-newY >= height1 && -newY < height2) {
+            this.currentIndex = i;
+            return;
+          }
+
+          // 滚动到底部，且-newY大于最后一个元素的上限
+          this.currentIndex = listHeight.length - 2;
+        }
+      }
+    },
     methods: {
       onShortcutTouchStart(e) { // 对于包含ul、li的div来说，点击li也可触发点击事件
         const anchorIndex = getData(e.target, 'index');
@@ -62,9 +110,26 @@
         const anchorIndex = parseInt(this.touch.anchorIndex) + delta;
         this._scrollTo(anchorIndex);
       },
+      scroll(pos) {
+        this.scrollY = pos.y;
+      },
       _scrollTo(index) {
+        this.scrollY = -this.listHeight[index]; // 点击右侧导航入口，手动设置scrollY,触发watch事件
         this.$refs.listview.scrollToElement(this.$refs.listGroup[index], 0);
+      },
+      _calculateHeight() {
+        this.listHeight = [];
+        const list = this.$refs.listGroup; // 获取到所有的listGroup
+        let height = 0;
+        this.listHeight.push(height);
+        for (let i = 0; i < list.length; i++) {
+          const item = list[i];
+          // item为每个listGroupDOM节点，用clientHeight睡醒可以得到高元素的高度，累加之后就是距离第一个listGroup的高度了
+          height += item.clientHeight;
+          this.listHeight.push(height);
+        }
       }
+
     }
   };
 </script>

@@ -75,6 +75,9 @@
         if (!this.checkloaded) {
           this.$refs.scroll.refresh();
           this.checkloaded = true;
+          setTimeout(() => {
+            this.$refs.scroll.refresh();
+          }, 20);
         }
       },
     },
