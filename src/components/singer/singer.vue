@@ -1,5 +1,6 @@
 <template>
   <div class="singer">
+    <list-view :data="singers"></list-view>
   </div>
 </template>
 
@@ -7,6 +8,7 @@
   import { getSingerList } from 'api/singer';
   import { ERR_OK } from 'api/config';
   import Singer from 'common/js/singer';
+  import ListView from 'base/listview/listview';
 
   const HOT_NAME = '热门';
   const HOT_SINGER_LEN = 10;
@@ -24,8 +26,7 @@
       _getSingerList() {
         getSingerList().then((response) => {
           if (response.code === ERR_OK) {
-            this.singers = response.data.list;
-            console.log(this._normalizeSinger(this.singers));
+            this.singers = this._normalizeSinger(response.data.list);
           }
         });
       },
@@ -33,17 +34,17 @@
         const map = {
           hot: {
             title: HOT_NAME,
-            item: []
+            items: []
           }
         };
+        // 将数据前10条作为热门数据
         list.forEach((item, index) => {
           if (index < HOT_SINGER_LEN) {
-            map.hot.item.push(new Singer({
+            map.hot.items.push(new Singer({
               id: item.Fsinger_mid,
               name: item.Fsinger_name
             }));
           }
-
           const key = item.Findex;
           if (!map[key]) {
             map[key] = {
@@ -74,6 +75,9 @@
         });
         return hot.concat(ret);
       }
+    },
+    components: {
+      ListView
     }
   };
 </script>
