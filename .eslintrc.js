@@ -51,6 +51,10 @@ module.exports = {
     'no-plusplus': 0,
     'arrow-body-style': 0,
     'no-unused-expressions': 0,
-    'comma-dangle': 0
+    'comma-dangle': 0,
+    'prefer-spread': 0,
+    'prefer-rest-params': 0,
+    'no-bitwise': 0,
+    'radix': 0
   }
 }
