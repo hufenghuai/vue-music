@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b0fd4971-d8ba-4f9e-9e8c-e240000a6f77" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/base/listview/listview.vue" afterPath="$PROJECT_DIR$/src/base/listview/listview.vue" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/base/scroll/scroll.vue" afterPath="$PROJECT_DIR$/src/base/scroll/scroll.vue" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/components/recommend/recommend.vue" afterPath="$PROJECT_DIR$/src/components/recommend/recommend.vue" />
-    </list>
+    <list default="true" id="b0fd4971-d8ba-4f9e-9e8c-e240000a6f77" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
     <ignored path="$PROJECT_DIR$/tmp/" />
@@ -442,12 +438,12 @@
       <workItem from="1496648824963" duration="8208000" />
       <workItem from="1496712805487" duration="20917000" />
       <workItem from="1496798086072" duration="10106000" />
-      <workItem from="1496814933171" duration="11075000" />
+      <workItem from="1496814933171" duration="11152000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="76291000" />
+    <option name="totallyTimeSpent" value="76368000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="0" />
