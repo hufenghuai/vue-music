@@ -10,7 +10,7 @@
       <li v-for="group in data" class="list-group" ref="listGroup">
         <h2 class="list-group-title">{{ group.title }}</h2>
         <ul>
-          <li v-for="item in group.items" class="list-group-item">
+          <li v-for="item in group.items" class="list-group-item" @click="selectItem(item)">
             <img v-lazy="item.avatar" class="avatar">
             <span class="name">{{ item.name }}</span>
           </li>
@@ -28,14 +28,22 @@
         </li>
       </ul>
     </div>
+    <div class="list-fixed" v-show="fixedTitle" ref="fixed">
+      <h1 class="fixed-title">{{ fixedTitle }}</h1>
+    </div>
+    <div v-show="!data.length" class="loading-container">
+      <loading></loading>
+    </div>
   </scroll>
 </template>
 
 <script type="text/ecmascript-6">
   import Scroll from 'base/scroll/scroll';
   import { getData } from 'common/js/dom';
+  import Loading from 'base/loading/loading';
 
   const ANCHOR_HEIGHT = 18;
+  const TITLE_HEIGHT = 30;
 
   export default {
     created() {
@@ -47,7 +55,8 @@
     data() { // watch
       return {
         scrollY: -1,
-        currentIndex: 0
+        currentIndex: 0,
+        diff: -1
       };
     },
     props: {
@@ -61,10 +70,17 @@
         return this.data.map((group) => {
           return group.title.substr(0, 1);
         });
+      },
+      fixedTitle() {
+        if (this.scrollY > 0) {
+          return '';
+        }
+        return this.data[this.currentIndex] ? this.data[this.currentIndex].title : '';
       }
     },
     components: {
-      Scroll
+      Scroll,
+      Loading
     },
     watch: { // 监听data变化
       data() { // 当data发生变化，重新计算每个group高度
@@ -72,8 +88,10 @@
           this._calculateHeight();
         }, 20);
       },
-      scrollY(newY) { // 监测scrollY发生变化
+      scrollY(newY, oldValue) { // 监测scrollY发生变化
+        // watch监听，有两个参数，一个是最新的值，一个是旧的值
         // newY就是scroll里面的pos.y
+        oldValue;
         const listHeight = this.listHeight;
         // 当滚动到顶部，newY > 0;
         if (newY > 0) {
@@ -87,15 +105,28 @@
           const height2 = listHeight[i + 1];
           if (-newY >= height1 && -newY < height2) {
             this.currentIndex = i;
+            this.diff = height2 + newY;
             return;
           }
 
           // 滚动到底部，且-newY大于最后一个元素的上限
           this.currentIndex = listHeight.length - 2;
         }
+      },
+      diff(newVal) {
+        const fixedTop = (newVal > 0 && newVal < TITLE_HEIGHT) ? newVal - TITLE_HEIGHT : 0;
+        if (this.fixedTop === fixedTop) {
+          return;
+        }
+        this.fixedTop = fixedTop;
+        this.$refs.fixed.style.transform = `translate3d(0, ${fixedTop}px, 0)`;
       }
     },
     methods: {
+      selectItem(item) {
+        console.log(item);
+        this.$emit('select', item);// 触发当前实例上的事件。附加参数都会传给监听器回调
+      },
       onShortcutTouchStart(e) { // 对于包含ul、li的div来说，点击li也可触发点击事件
         const anchorIndex = getData(e.target, 'index');
         const firstTouch = e.touches[0];
@@ -114,6 +145,14 @@
         this.scrollY = pos.y;
       },
       _scrollTo(index) {
+        if (!index && index !== 0) {
+          return;
+        }
+        if (index < 0) {
+          index = 0;
+        } else if (index > this.listHeight.length - 2) {
+          index = this.listHeight.length;
+        }
         this.scrollY = -this.listHeight[index]; // 点击右侧导航入口，手动设置scrollY,触发watch事件
         this.$refs.listview.scrollToElement(this.$refs.listGroup[index], 0);
       },
