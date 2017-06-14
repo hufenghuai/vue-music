@@ -1,10 +1,11 @@
+import createLogger from 'vuex/dist/logger';
+// 插件，每次通过mutations修改state,会在控制台打印，打印上一条state和现在的state
 import Vue from 'vue';
 import Vuex from 'vuex';
 import * as actions from './actions';
 import * as getters from './getters';
 import state from './state';
 import mutations from './mutations';
-import createLogger from 'vuex/dist/logger'; // 插件，每次通过mutations修改state,会在控制台打印，打印上一条state和现在的state
 
 Vue.use(Vuex);
 
@@ -15,5 +16,6 @@ export default new Vuex.Store({
   getters,
   state,
   mutations,
-  strict: debug
-})
+  strict: debug,
+  plugins: debug ? [createLogger()] : []
+});

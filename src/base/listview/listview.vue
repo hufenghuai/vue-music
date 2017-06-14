@@ -124,8 +124,9 @@
     },
     methods: {
       selectItem(item) {
-        console.log(item);
+//        console.log(item);
         this.$emit('select', item);// 触发当前实例上的事件。附加参数都会传给监听器回调
+        // $emit一般为子组件想父组件传递一个讯息，一个参数为讯息的名臣，第二个参数父组件可接受监听
       },
       onShortcutTouchStart(e) { // 对于包含ul、li的div来说，点击li也可触发点击事件
         const anchorIndex = getData(e.target, 'index');

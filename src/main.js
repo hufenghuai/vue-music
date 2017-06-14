@@ -5,6 +5,7 @@ import 'common/stylus/index.styl';
 import Vue from 'vue';
 import App from './App';
 import router from './router';
+import store from './store';
 
 const url = require('common/image/default.png');
 
@@ -19,6 +20,7 @@ Vue.config.productionTip = false;
 new Vue({
   el: '#app',
   router,
+  store,
   template: '<App/>',
-  components: { App },
+  components: { App }
 });

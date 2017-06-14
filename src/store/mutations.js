@@ -3,5 +3,10 @@ import * as types from './mutation-types';
 const mutations = {
   [types.SET_SINGER] (state, singer) {
     state.singer = singer;
+  },
+  [types.SET_GETTERS] (state, singer) {
+    state.singer = singer;
   }
 };
+
+export default mutations;

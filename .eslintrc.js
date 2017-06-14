@@ -55,6 +55,7 @@ module.exports = {
     'prefer-spread': 0,
     'prefer-rest-params': 0,
     'no-bitwise': 0,
-    'radix': 0
+    'radix': 0,
+    'no-use-before-define': 0
   }
 }
