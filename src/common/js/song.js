@@ -2,7 +2,7 @@ export default class Song {
   constructor({ id, mid, singer, name, album, duration, image, url }) {
     this.id = id;
     this.mid = mid;
-    this.singer = singer;
+    this.singer = singer; // 歌手名
     this.name = name;
     this.album = album;
     this.duration = duration;
